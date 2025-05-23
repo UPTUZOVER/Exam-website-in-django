@@ -1,21 +1,108 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Successful</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .logout-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 6px rgba(76, 175, 80, 0.2));
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        .sub-message {
+            color: #718096;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin: 1.5rem 0;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 2rem;
+                padding: 0 1rem;
+            }
+
+            .sub-message {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
+            .success-icon {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
     {% include "exam/navbar.html" %}
-    <br><br><br><br><br>
-<!-- <img src="{% static "image/logout_img.png" %}"  style="width:800px; height:100px; padding-left:400px;"> -->
 
-<h2 class="text-center">Logged Out Successfully. <br> Thank you for using our system!</h2>
+    <div class="logout-container">
+        <!-- Uncomment if you have the image -->
+        <!-- <img src="{% static 'image/logout_img.png' %}" class="success-icon" alt="Success Icon"> -->
 
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br>
-{% include "exam/footer.html" %}
+        <div class="emoji">🎉</div>
+        <h2>Successfully Logged Out</h2>
+        <p class="sub-message">
+            Thank you for using our system!<br>
+            Your session has been securely terminated.
+        </p>
+    </div>
 
-  </body>
+    {% include "exam/footer.html" %}
+</body>
 </html>

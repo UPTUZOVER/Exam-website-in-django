@@ -4,11 +4,25 @@ from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.conf import settings
-from datetime import date, timedelta
 from exam import models as QMODEL
 from student import models as SMODEL
 from exam import forms as QFORM
+
+
+@login_required(login_url='teacherlogin')
+def admin_view_student_view(request):
+    students= SMODEL.Student.objects.all()
+    return render(request,'teacher/admin_view_student.html',{'students':students})
+
+
+
+
+@login_required(login_url='teacherlogin')
+def teacher_student_view(request):
+    dict={
+    'total_student':SMODEL.Student.objects.all().count(),
+    }
+    return render(request,'teacher/admin_student.html',context=dict)
 
 
 #for showing signup/login button for teacher

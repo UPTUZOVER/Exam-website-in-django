@@ -3,6 +3,10 @@ from teacher import views
 from django.contrib.auth.views import LoginView
 
 urlpatterns = [
+    path('teacher_student_view/admin-view-student', views.admin_view_student_view, name='admin-view-student'),
+
+    path('teacher-view-student', views.admin_view_student_view, name='admin-view-student'),
+    path('teacher_student_view/', views.teacher_student_view, name='teacher_student_view'),
     path('teacherclick', views.teacherclick_view, name='teacherclick'),
     path('teacherlogin', LoginView.as_view(template_name='teacher/teacherlogin.html'),name='teacherlogin'),
     path('teachersignup', views.teacher_signup_view,name='teachersignup'),
