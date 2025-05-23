@@ -1,0 +1,146 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+    <style type="text/css">
+        .dashboard-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-content {
+            padding: 30px;
+            color: white;
+            position: relative;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-accent-1 {
+            background: linear-gradient(135deg, #4C51BF 0%, #667eea 100%);
+        }
+
+        .bg-accent-2 {
+            background: linear-gradient(135deg, #4299e1 0%, #63b3ed 100%);
+        }
+
+        .bg-accent-3 {
+            background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
+        }
+
+        .dashboard-header {
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+    </style>
+</head>
+
+<div class="container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Teacher Dashboard Overview</h1>
+    </div>
+
+    <div class="row">
+        <!-- Courses Card -->
+        <div class="col-md-4 mb-4">
+            <a href="#" class="text-decoration-none">
+                <div class="dashboard-card bg-accent-1">
+                    <div class="card-content">
+                        <i class="fas fa-book-open card-icon"></i>
+                        <div class="stat-number">{{ total_course }}</div>
+                        <div class="stat-label">Total Courses</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Questions Card -->
+        <div class="col-md-4 mb-4">
+            <a href="#" class="text-decoration-none">
+                <div class="dashboard-card bg-accent-2">
+                    <div class="card-content">
+                        <i class="fas fa-question-circle card-icon"></i>
+                        <div class="stat-number">{{ total_question }}</div>
+                        <div class="stat-label">Exam Questions</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Students Card -->
+        <div class="col-md-4 mb-4">
+            <a href="#" class="text-decoration-none">
+                <div class="dashboard-card bg-accent-3">
+                    <div class="card-content">
+                        <i class="fas fa-users card-icon"></i>
+                        <div class="stat-number">{{ total_student }}</div>
+                        <div class="stat-label">Enrolled Students</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Recent Activity</h5>
+                    <div class="list-group">
+                        <!-- Add dynamic activity items here -->
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <small class="text-muted">3 hours ago</small>
+                            </div>
+                            <p class="mb-1">Created new exam for Mathematics 101</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <small class="text-muted">1 day ago</small>
+                            </div>
+                            <p class="mb-1">Updated question bank for Physics 202</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br>
+{% endblock content %}

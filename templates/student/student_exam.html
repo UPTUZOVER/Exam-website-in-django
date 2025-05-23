@@ -1,0 +1,82 @@
+{% extends 'student/studentbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Bootstrap 5 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .course-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+  }
+
+  .course-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .btn-primary {
+    border-radius: 10px;
+    padding: 6px 12px;
+  }
+
+  .table thead th {
+    background-color: #0d6efd;
+    color: white;
+  }
+
+  .panel-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="card course-card">
+    <div class="card-header bg-white">
+      <h2 class="panel-title text-center">📚 Available Courses</h2>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th scope="col">📘 Exam Name</th>
+              <th scope="col" class="text-center">✅ Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in courses %}
+            <tr>
+              <td>{{ t.course_name }}</td>
+              <td class="text-center">
+                <a href="{% url 'take-exam' t.id %}" class="btn btn-primary">
+                  <i class="bi bi-pencil-square"></i> Attend Exam
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2" class="text-center text-muted">No courses available at the moment.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Icons (optional but for icon in button) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+{% endblock content %}
+  o

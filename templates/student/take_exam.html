@@ -1,0 +1,143 @@
+{% extends 'student/studentbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Bootstrap 5 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  .exam-card {
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .exam-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .btn-primary {
+    border-radius: 10px;
+  }
+
+  .card-footer {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .list-group-item {
+    background-color: transparent;
+    border: none;
+    padding-left: 0;
+  }
+
+  .list-title {
+    font-weight: 600;
+    color: #0d6efd;
+  }
+
+  .rule-icon {
+    color: #0d6efd;
+    margin-right: 8px;
+  }
+
+</style>
+
+<div class="container my-5">
+  <div class="card exam-card">
+    <div class="card-body">
+      <h3 class="card-title text-center mb-4">📋 Exam Details</h3>
+
+      <h5 class="list-title">Course Info:</h5>
+      <ul class="list-group mb-3">
+        <li class="list-group-item"><i class="bi bi-journal-text rule-icon"></i>Course: <strong>{{ course.course_name }}</strong></li>
+        <li class="list-group-item"><i class="bi bi-question-circle rule-icon"></i>Total Questions: <strong>{{ total_questions }}</strong></li>
+        <li class="list-group-item"><i class="bi bi-star-fill rule-icon"></i>Total Marks: <strong>{{ total_marks }}</strong></li>
+      </ul>
+
+
+
+        <h5 class="list-title">Exam Rules:</h5>
+<ul class="list-group">
+
+  <li class="list-group-item">
+    <i class="bi bi-ui-checks rule-icon"></i>
+    <strong>All questions are multiple choice (MCQ).</strong><br>
+    You will be given several options for each question. You must select only one answer that you think is correct.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-exclamation-circle rule-icon text-danger"></i>
+    <strong>Only one choice is correct.</strong><br>
+    Even if multiple options seem correct, only one is officially considered correct and will earn you points.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-award rule-icon"></i>
+    <strong>Each question carries different marks.</strong><br>
+    Some questions may be worth more than others. For example, easy questions might give 1 point, medium ones 2 points, and hard ones 3 or more points.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-hourglass-split rule-icon"></i>
+    <strong>Answer quickly (ASAP).</strong><br>
+    While there may not be a strict timer for each question, you are expected to answer promptly to avoid system timeout or delays.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-arrow-clockwise rule-icon"></i>
+    <strong>Do not refresh or go back!</strong><br>
+    If you refresh the page or press the back button, you may receive a new random question, and your previous attempt might be counted as used.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-shuffle rule-icon"></i>
+    <strong>Questions appear in random order.</strong><br>
+    To maintain fairness and prevent cheating, questions are shuffled. No two students will receive the same question in the same order.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-graph-up rule-icon"></i>
+    <strong>Instant result after submission.</strong><br>
+    Once you submit your exam, you will immediately see your score along with correct/incorrect answers if enabled.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-lock rule-icon"></i>
+    <strong>No option to go back to previous question.</strong><br>
+    Once you move to the next question, you cannot return to the previous one. So make sure your answer is final before submitting.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-check2-circle rule-icon"></i>
+    <strong>Unanswered questions are treated as wrong.</strong><br>
+    If you skip a question or close the exam without submitting, it will be considered incorrect and no points will be given.
+  </li>
+
+  <li class="list-group-item">
+    <i class="bi bi-person-lock rule-icon"></i>
+    <strong>One attempt only.</strong><br>
+    You can only take the test once. Retaking the exam is not allowed unless the instructor grants special permission.
+  </li>
+
+</ul>
+
+
+
+
+      <div class="text-center mt-4">
+        <a href="{% url 'start-exam' course.id %}" class="btn btn-primary btn-lg">
+          <i class="bi bi-play-circle"></i> Enter Examination
+        </a>
+      </div>
+    </div>
+    <div class="card-footer">
+      🎓 Best of Luck, Students!
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
