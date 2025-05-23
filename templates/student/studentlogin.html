@@ -1,85 +1,204 @@
 <!DOCTYPE html>
 {% load widget_tweaks %}
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
-    <title></title>
-    <style media="screen">
-        body {
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <style>
+        * {
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
-            background: #adc5df;  /* fallback for old browsers */
-        background: -webkit-linear-gradient(to bottom, #d7d2cc, #adc5df);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to bottom, #d7d2cc, #adc5df); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
-        
-        .box {
-            width: 500px;
-            padding: 40px;
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+        }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 450px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .input-icon {
             position: absolute;
+            left: 1rem;
             top: 50%;
-            left: 50%;
-            background: #fff;
-            text-align: center;
-            transition: 0.25s;
-            margin-top: 100px
+            transform: translateY(-50%);
+            color: #a0aec0;
+            z-index: 2;
         }
-        
-        .box input[type="text"],
-        .box input[type="password"] {
-            border: 0;
-            background: none;
-            display: block;
-            margin: 20px auto;
-            text-align: center;
-            border: 2px solid #838383;
-            padding: 10px 10px;
-            width: 250px;
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
             outline: none;
-            color: #000;
-            transition: 0.25s
         }
-        
-        .box h1 {
-            color: #424242;
-            font-weight: 500
-        }
-        
-        .box input[type="text"]:focus,
-        .box input[type="password"]:focus {
-            width: 300px;
-            border-color: #c7d7e9;
-        }
-        
 
+        .login-btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .login-btn:hover::after {
+            left: 100%;
+        }
+
+        .additional-links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .additional-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .additional-links a:hover {
+            color: #764ba2;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                border-radius: 16px;
+            }
+
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
-  </head>
-  <body>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
     {% include "exam/navbar.html" %}
-    <div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <form class="box" method="post">
-                    {% csrf_token %}
-                    <h1>Student Login Panel</h1>
 
-                     {% render_field form.username class="form-control rounded-0" autocomplete="off" placeholder="Username" %}
-                     {% render_field form.password class="form-control rounded-0" autocomplete="off" placeholder="Password" %}
-
-                     <input type="submit" class="btn btn-primary btn-lg rounded-0" name="" value="Login">
-
-                </form>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue to your account</p>
             </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    {% render_field form.username class="form-control" autocomplete="off" placeholder="Username" %}
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    {% render_field form.password class="form-control" autocomplete="off" placeholder="Password" %}
+                </div>
+
+                <button type="submit" class="login-btn">Sign In</button>
+
+                <div class="additional-links">
+                    <a href="#">Forgot Password?</a>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-<br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br>
-{% include "exam/footer.html" %}
-  </body>
+
+    {% include "exam/footer.html" %}
+</body>
 </html>

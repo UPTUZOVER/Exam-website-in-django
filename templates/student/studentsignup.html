@@ -1,76 +1,269 @@
 <!DOCTYPE html>
 {% load widget_tweaks %}
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Signup</title>
     <style>
-
-        form{
-           margin: 50px; 
-          
+        /* Asosiy stil */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+        }
+
+        /* Signup konteyneri */
+        .signup-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 3rem 4rem;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Sarlavha */
+        .form-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2.8rem;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #667eea;
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* Forma struktura */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        /* Label stil */
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Input maydonlari */
+        .form-input {
+            width: 100%;
+            padding: 1.1rem 1.4rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            background: #ffffff;
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        /* File input uchun maxsus stil */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 1.2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px dashed #cbd5e0;
+            text-align: center;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.03);
+            color: #667eea;
+        }
+
+        /* Submit tugmasi */
+        .submit-btn {
+            width: 100%;
+            padding: 1.3rem;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent 25%,
+                rgba(255,255,255,0.1) 50%,
+                transparent 75%);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        /* Animatsiyalar */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-150%) rotate(45deg); }
+            100% { transform: translateX(150%) rotate(45deg); }
+        }
+
+        /* Responsive dizayn */
+        @media (max-width: 768px) {
+            .signup-container {
+                margin: 2rem;
+                padding: 2rem;
+                border-radius: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .form-input {
+                padding: 1rem;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     {% include "exam/navbar.html" %}
- 
 
+    <div class="signup-container">
+        <h1 class="form-title">Student Registration</h1>
+        <form method="POST" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
 
-<br><br><br>
-<div class="container">
-  <h3 style="text-align: center;">Student Signup Form</h3>
-<form method="POST" autocomplete="off" enctype="multipart/form-data">
-    {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="first_name">First Name</label>
+                    {% render_field userForm.first_name|attr:'required:true' class="form-input" placeholder="John" %}
+                </div>
 
-    <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="first_name">First Name</label>
-          {% render_field userForm.first_name|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="First Name" %}
-        </div>
-        <div class="form-group col-md-6">
-          <label for="last_name">Last Name</label>
-          {% render_field userForm.last_name|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="Last Name" %}
-        </div>
-      </div>
+                <div class="form-group">
+                    <label class="form-label" for="last_name">Last Name</label>
+                    {% render_field userForm.last_name|attr:'required:true' class="form-input" placeholder="Doe" %}
+                </div>
+            </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="mobile">Contact</label>
-          {% render_field studentForm.mobile|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="Contact Number" %}
-        </div>
-        <div class="form-group col-md-6">
-          <label for="address">Address</label>
-          {% render_field studentForm.address|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="Address" %}
-        </div>
-      </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="mobile">Contact Number</label>
+                    {% render_field studentForm.mobile|attr:'required:true' class="form-input" placeholder="+998 99 999 99 99" %}
+                </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="username">Username</label>
-          {% render_field userForm.username|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="username" %}
-        </div>
-        <div class="form-group col-md-6">
-          <label for="inputPassword4">Password</label>
-          {% render_field userForm.password|attr:'required:true'  class="form-control form-control-sm rounded-0" placeholder="password" %}
-        </div>
-      </div>
+                <div class="form-group">
+                    <label class="form-label" for="address">Address</label>
+                    {% render_field studentForm.address|attr:'required:true' class="form-input" placeholder="Your full address" %}
+                </div>
+            </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-12">
-          <label for="profile_pic">Profile Picture</label>
-          {% render_field studentForm.profile_pic|attr:'required:true' class="form-control form-control-sm rounded-0" placeholder="" %}
-        </div>
-        
-      </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    {% render_field userForm.username|attr:'required:true' class="form-input" placeholder="unique_username" %}
+                </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    {% render_field userForm.password|attr:'required:true' class="form-input" type="password" placeholder="••••••••" %}
+                </div>
+            </div>
 
-    <button type="submit" class="btn btn-primary btn-lg rounded-0">Sign Up</button>
-  </form>
-</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="profile_pic">Profile Photo</label>
+                    <div class="file-input-wrapper">
+                        {% render_field studentForm.profile_pic|attr:'required:true' class="file-input" %}
+                    </div>
+                </div>
+            </div>
 
+            <button type="submit" class="submit-btn">
+                Create Account
+                <span class="btn-wave"></span>
+            </button>
+        </form>
+    </div>
 
-<br><br>
-{% include "exam/footer.html" %}
-  </body>
+    {% include "exam/footer.html" %}
+</body>
 </html>

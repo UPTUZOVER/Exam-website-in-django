@@ -3,10 +3,73 @@
 <html lang="en" dir="ltr">
 
 <style>
-  .jumbotron{
-    margin-bottom: 0px;
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+  }
+
+  .jumbotron {
+    margin-bottom: 0;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    padding: 100px 20px;
+    border-radius: 0;
+  }
+
+  .jumbotron h2 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #00c6ff;
+    margin-bottom: 20px;
+  }
+
+  .jumbotron p.display-4 {
+    font-size: 2rem;
+    color: #cce7ff;
+  }
+
+  .jumbotron .lead {
+    font-size: 1.25rem;
+    color: #e0f7fa;
+    margin-top: 15px;
+    margin-bottom: 30px;
+  }
+
+  .jumbotron a.btn-info {
+    background-color: #00c6ff;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+  }
+
+  .jumbotron a.btn-info:hover {
+    background-color: #009ec3;
+    transform: scale(1.05);
+    color: #fff;
+  }
+
+  .container {
+    max-width: 960px;
+  }
+
+  @media (max-width: 768px) {
+    .jumbotron h2 {
+      font-size: 2.2rem;
+    }
+
+    .jumbotron p.display-4 {
+      font-size: 1.2rem;
+    }
+
+    .jumbotron .lead {
+      font-size: 1rem;
+    }
   }
 </style>
+
 <body>
   {% include "exam/navbar.html" %}
 <br>
@@ -16,12 +79,12 @@
     <p class="display-4 d-none d-sm-block">Attend your examinations online!</p>
     <p class="lead">Sign Up now to start your first online examination</p>
 
-  
+
     <p><strong> Start Your Journey Here:</strong></p>
     <a href="/student/studentsignup" class="btn btn-lg btn-info" style="padding-right: 35px; border-radius: 0%;"><i class="fa fa-graduation-cap" aria-hidden="true"></i> Sign Up as Student</a>
-    
+
     <br><br><br>
-  </div>  
+  </div>
 </section>
   {% include "exam/footer.html" %}
 
