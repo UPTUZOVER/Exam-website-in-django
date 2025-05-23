@@ -4,53 +4,78 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Examination</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <style type="text/css">
-    .bs-example {
-      margin: 0px;
+
+  <style>
+    .custom-navbar {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
-    .bg-dark {
-    background-color: #212529!important;
-}
-    .navbar-brand {
-      font-size: 20px;
-      font-family: sans-serif;
+
+    .custom-navbar .custom-brand {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff !important;
+    }
+
+    .custom-navbar .custom-nav-link {
+      color: #ddd !important;
+      font-size: 16px;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+
+    .custom-navbar .custom-nav-link:hover {
+      color: #ffffff !important;
+      text-decoration: underline;
+    }
+
+    .custom-navbar .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .custom-navbar .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30'
+        xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2'
+        stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
     }
   </style>
 </head>
 
 <body>
 
-  <div class="bs-example">
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top" style="background-color: #212529;">
-    <a style="color: #ffffff;text-decoration: none; " href="/"><font face = "verdana" size =" 5">Online Examination</font><br /></a>  
-      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+  <nav class="navbar navbar-expand-md custom-navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand custom-brand" href="/">Online Examination</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-        <div class="navbar-nav">
-    
-        </div>
-
-        <div class="navbar-nav">
-          <a style="padding-left: 30px;" href="/" class="nav-item nav-link"> Home</a>
-          <a href="{% url 'teacherclick' %}" class="nav-item nav-link">Teacher</a>          <a href="/student/studentclick" class="nav-item nav-link">Student</a>
-          <a href="/adminclick" class="nav-item nav-link">Admin</a>
-          
-        </div>
-
-
-
-
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a href="/" class="nav-link custom-nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'teacherclick' %}" class="nav-link custom-nav-link">Teacher</a>
+          </li>
+          <li class="nav-item">
+            <a href="/student/studentclick" class="nav-link custom-nav-link">Student</a>
+          </li>
+          <li class="nav-item">
+            <a href="/adminclick" class="nav-link custom-nav-link">Admin</a>
+          </li>
+        </ul>
       </div>
-    </nav>
-  </div>
-
+    </div>
+  </nav>
 
 </body>
 

@@ -5,38 +5,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Student Home - Online Examination</title>
 
-  <style media="screen">
-    .jumbotron {
-      margin-top: 0px;
-      margin-bottom: 0px;
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <style>
+    body {
+      background-color: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .jumbotron h1 {
+    .main-box {
+      margin-top: 120px;
+      background-color: #ffffff;
+      padding: 50px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
 
-  </style>
+    .main-box h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #343a40;
+    }
 
+    .main-box p.lead {
+      font-size: 1.2rem;
+      color: #555;
+      margin: 20px 0;
+    }
+
+    .btn-rounded {
+      font-size: 1rem;
+      padding: 14px 32px;
+      margin: 10px;
+      border-radius: 30px;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: none;
+    }
+
+    .btn-signup {
+      background: linear-gradient(45deg, #28a745, #42d392);
+      color: white;
+    }
+
+    .btn-signup:hover {
+      background: linear-gradient(45deg, #218838, #33bb77);
+      transform: translateY(-2px);
+    }
+
+    .btn-login {
+      background: linear-gradient(45deg, #007bff, #42a5f5);
+      color: white;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(45deg, #0062cc, #2c92e0);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 
 <body>
 
   {% include "exam/navbar.html" %}
-  <br><br>
-  <div class="jumbotron" style="margin-bottom:0px;">
-    <h1 class="display-4">Hello Student,</h1>
-    <p class="lead">and Welcome to Online Examination System</p>
-    <hr class="my-4">
-    <p>Select any of them to access into the system</p>
-    <p class="lead">
-      <a class="btn btn-secondary rounded-0" href="studentsignup" role="button">Create Your Account</a>
-      <a class="btn btn-primary rounded-0" href="studentlogin" role="button">Login Now</a>
-    </p>
-    <br><br><br><br><br><br>
+
+  <div class="container">
+    <div class="main-box mx-auto col-md-8">
+      <h1>👋 Hello Student</h1>
+      <p class="lead">Welcome to the Online Examination System</p>
+      <hr>
+      <p>Choose an option below to continue:</p>
+      <a href="{% url 'studentsignup' %}" class="btn btn-rounded btn-signup">✨ Create Your Account</a>
+      <a href="{% url 'studentlogin' %}" class="btn btn-rounded btn-login">🚀 Login Now</a>
+    </div>
   </div>
- 
+
   {% include "exam/footer.html" %}
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

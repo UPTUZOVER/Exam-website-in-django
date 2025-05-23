@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'exam',
     'markdown',
-
     'teacher',
     'student',
     'widget_tweaks',
