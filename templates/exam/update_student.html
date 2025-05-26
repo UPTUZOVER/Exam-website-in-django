@@ -1,48 +1,100 @@
 {% extends 'exam/adminbase.html' %}
 {% load widget_tweaks %}
 {% block content %}
+
 <head>
-  <style media="screen">
-    input[type=text], select,input[type=number] ,input[type=password], textarea{
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
+  <style>
+    .form-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .alert {
+      margin: 20px 0;
+      padding: 15px;
+    }
   </style>
-
-
 </head>
 
-<br><br>
-<h2 style="text-align:center;">Update Student</h2>
-<div>
-  <form method="post" autocomplete="off" enctype="multipart/form-data" style="margin-left:200px;margin-right:200px;">
-      {% csrf_token %}
-        <label for="first_name">First Name</label>
-        {% render_field userForm.first_name class="form-control form-control-sm rounded-0" placeholder="First Name" %}
-        <label for="last_name">Last Name</label>
-        {% render_field userForm.last_name class="form-control form-control-sm rounded-0" placeholder="Last Name" %}
-          <label for="mobile">Contact</label>
-          {% render_field studentForm.mobile class="form-control form-control-sm rounded-0" placeholder="Mobile" %}
-            <label for="address">Address</label>
-          {% render_field studentForm.address class="form-control form-control-sm rounded-0" placeholder="Address" %}
-          
-        <label for="username">Username</label>
-        {% render_field userForm.username class="form-control form-control-sm rounded-0" placeholder="Username" %}
-          <label for="password">Password</label>
-        {% render_field userForm.password class="form-control form-control-sm rounded-0" placeholder="Password" %} <br><br>
-        <label for="profile_pic">Profile Picture</label>
-          {% render_field studentForm.profile_pic class="form-control form-control-sm rounded-0" placeholder="Profile Picture" %}
-<br><br>
-    <input type="submit" class="btn btn-lg rounded-0 btn-primary" value="Update" style="border-radius:0px;">
+<div class="form-container">
+  <h2 class="text-center mb-4">Talabani Yangilash</h2>
+
+  <!-- Xatoliklarni ko'rsatish -->
+  {% if userForm.errors %}
+  <div class="alert alert-danger">
+    <strong>Foydalanuvchi ma'lumotlarida xatolik:</strong>
+    {{ userForm.errors }}
+  </div>
+  {% endif %}
+
+  {% if studentForm.errors %}
+  <div class="alert alert-danger">
+    <strong>Talaba ma'lumotlarida xatolik:</strong>
+    {{ studentForm.errors }}
+  </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <!-- User Form Maydonlari -->
+    <div class="form-group">
+      <label class="form-label">Ism</label>
+      {% render_field userForm.first_name class+="form-control" %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Familiya</label>
+      {% render_field userForm.last_name class+="form-control" %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      {% render_field userForm.email class+="form-control" %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      {% render_field userForm.username class+="form-control" %}
+    </div>
+
+   <div class="form-group">
+    <label class="form-label">Parol</label>
+    {% render_field userForm.password class+="form-control" placeholder="Parolni o&#39;zgartirmasangiz bo&#39;sh qoldiring" %}
+    <small class="form-text text-muted">Parolni faqat o'zgartirmoqchi bo'lsangiz kiriting</small>
+  </div>
+    <!-- Student Form Maydonlari -->
+    <div class="form-group">
+      <label class="form-label">Telefon</label>
+      {% render_field studentForm.mobile class+="form-control" %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Manzil</label>
+      {% render_field studentForm.address class+="form-control" %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Profil rasmi</label>
+      {% render_field studentForm.profile_pic class+="form-control-file" %}
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary btn-lg px-5">Yangilash</button>
+      <a href="{% url 'admin-view-student' %}" class="btn btn-secondary btn-lg px-5">Orqaga</a>
+    </div>
   </form>
 </div>
 
-
-
-<br><br><br><br><br><br><br><br>
+<br><br><br>
 {% endblock content %}

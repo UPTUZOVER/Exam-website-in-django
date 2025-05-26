@@ -1,12 +1,9 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
-from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
-from datetime import date, timedelta
-from django.db.models import Q
 from django.core.mail import send_mail
 from teacher import models as TMODEL
 from student import models as SMODEL
@@ -189,26 +186,32 @@ def admin_view_student_view(request):
     return render(request,'exam/admin_view_student.html',{'students':students})
 
 
-
 @login_required(login_url='adminlogin')
-def update_student_view(request,pk):
-    student=SMODEL.Student.objects.get(id=pk)
-    user=SMODEL.User.objects.get(id=student.user_id)
-    userForm=SFORM.StudentUserForm(instance=user)
-    studentForm=SFORM.StudentForm(request.FILES,instance=student)
-    mydict={'userForm':userForm,'studentForm':studentForm}
-    if request.method=='POST':
-        userForm=SFORM.StudentUserForm(request.POST,instance=user)
-        studentForm=SFORM.StudentForm(request.POST,request.FILES,instance=student)
+def update_student_view(request, pk):
+    student = SMODEL.Student.objects.get(id=pk)
+    user = SMODEL.User.objects.get(id=student.user_id)
+
+    if request.method == 'POST':
+        userForm = SFORM.StudentUserForm(request.POST, instance=user)
+        studentForm = SFORM.StudentForm(request.POST, request.FILES, instance=student)
+
         if userForm.is_valid() and studentForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            studentForm.save()
+            # Save the user form without committing to get the updated user instance
+            user = userForm.save(commit=False)
+            # Check if the password has been changed
+            password = userForm.cleaned_data.get('password')
+            if password:
+                user.set_password(password)
+            user.save()  # Save the user with the updated password (if changed)
+
+            studentForm.save()  # Save the student form
             return redirect('admin-view-student')
-    return render(request,'exam/update_student.html',context=mydict)
+    else:
+        userForm = SFORM.StudentUserForm(instance=user)
+        studentForm = SFORM.StudentForm(instance=student)
 
-
+    mydict = {'userForm': userForm, 'studentForm': studentForm}
+    return render(request, 'exam/update_student.html', context=mydict)
 
 @login_required(login_url='adminlogin')
 def delete_student_view(request,pk):

@@ -1,146 +1,314 @@
 {% extends 'teacher/teacherbase.html' %}
-{% load widget_tweaks %}
+{% load static humanize %}
 {% block content %}
+{% load static humanize custom_filters %}
+{% load custom_filters %}
+
 <head>
-    <style type="text/css">
-        .dashboard-card {
-            transition: all 0.3s ease;
-            border-radius: 15px;
-            overflow: hidden;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-content {
-            padding: 30px;
-            color: white;
-            position: relative;
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            opacity: 0.3;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-        }
-
-        .bg-accent-1 {
-            background: linear-gradient(135deg, #4C51BF 0%, #667eea 100%);
-        }
-
-        .bg-accent-2 {
-            background: linear-gradient(135deg, #4299e1 0%, #63b3ed 100%);
-        }
-
-        .bg-accent-3 {
-            background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
-        }
-
-        .dashboard-header {
-            margin-bottom: 40px;
-            padding: 20px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .dashboard-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
+    <link href="{% static 'css/chart.min.css' %}" rel="stylesheet">
+    <style>
+        .progress-lg { height: 25px; }
+        .chart-container { background: white; border-radius: 15px; padding: 20px; }
+        .activity-badge { width: 8px; height: 8px; }
+        .table-hover tbody tr:hover { background-color: rgba(0,0,0,0.03); }
     </style>
 </head>
 
-<div class="container">
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">Teacher Dashboard Overview</h1>
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">Teaching Analytics Dashboard</h2>
+            <p class="text-muted">Last updated: {% now "DATETIME_FORMAT" %}</p>
+        </div>
     </div>
 
+    <!-- Summary Cards -->
     <div class="row">
-        <!-- Courses Card -->
-        <div class="col-md-4 mb-4">
-            <a href="#" class="text-decoration-none">
-                <div class="dashboard-card bg-accent-1">
-                    <div class="card-content">
-                        <i class="fas fa-book-open card-icon"></i>
-                        <div class="stat-number">{{ total_course }}</div>
-                        <div class="stat-label">Total Courses</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary mb-1">
+                                Total Courses</div>
+                            <div class="h5 mb-0 font-weight-bold">{{ total_course }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
 
-        <!-- Questions Card -->
-        <div class="col-md-4 mb-4">
-            <a href="#" class="text-decoration-none">
-                <div class="dashboard-card bg-accent-2">
-                    <div class="card-content">
-                        <i class="fas fa-question-circle card-icon"></i>
-                        <div class="stat-number">{{ total_question }}</div>
-                        <div class="stat-label">Exam Questions</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success mb-1">
+                                Total Questions</div>
+                            <div class="h5 mb-0 font-weight-bold">{{ total_question }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-question-circle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
 
-        <!-- Students Card -->
-        <div class="col-md-4 mb-4">
-            <a href="#" class="text-decoration-none">
-                <div class="dashboard-card bg-accent-3">
-                    <div class="card-content">
-                        <i class="fas fa-users card-icon"></i>
-                        <div class="stat-number">{{ total_student }}</div>
-                        <div class="stat-label">Enrolled Students</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info mb-1">
+                                Total Students</div>
+                            <div class="h5 mb-0 font-weight-bold">{{ total_student }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
-            </a>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning mb-1">
+                                Avg Pass Rate</div>
+                        <div class="h5 mb-0 font-weight-bold">
+                            {% if courses %}
+                                {% with total=0 count=0 %}
+                                    {% for course in courses %}
+                                        {% if course.pass_rate %}
+                                            {% with total=total|add:course.pass_rate count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if count > 0 %}
+                                        {{ total|div:count|floatformat:1 }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Recent Activity Section -->
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Performance Chart -->
+        <div class="col-xl-8 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Course Performance Overview</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Exams -->
+        <div class="col-xl-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Exams</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for course in recent_exams %}
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ course.course_name }}</span>
+                                <small class="text-muted">{{ course.created_at|naturaltime }}</small>
+                            </div>
+                            <div class="progress progress-lg mt-2">
+                                <div class="progress-bar bg-success"
+                                     style="width: {{ course.pass_rate|default:0 }}%">
+                                    {{ course.pass_rate|default:0|floatformat:1 }}%
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <div class="list-group-item">
+                            <p class="text-muted mb-0">No recent exams found</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Statistics -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Detailed Course Statistics</h6>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Recent Activity</h5>
-                    <div class="list-group">
-                        <!-- Add dynamic activity items here -->
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <small class="text-muted">3 hours ago</small>
-                            </div>
-                            <p class="mb-1">Created new exam for Mathematics 101</p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <small class="text-muted">1 day ago</small>
-                            </div>
-                            <p class="mb-1">Updated question bank for Physics 202</p>
-                        </a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Attempts</th>
+                                    <th>Avg Score</th>
+                                    <th>Pass Rate</th>
+                                    <th>Top Student</th>
+                                    <th>Last Attempt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.course_name }}</td>
+                                    <td>{{ course.total_attempts }}</td>
+                                    <td>{{ course.avg_score|default:0|floatformat:1 }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success"
+                                                 style="width: {{ course.pass_rate|default:0 }}%">
+                                                {{ course.pass_rate|default:0|floatformat:1 }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if course.ordered_results and course.ordered_results.0 %}
+                                            {{ course.ordered_results.0.student.get_name }} ({{ course.ordered_results.0.marks }}%)
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if course.result_set.all %}
+                                            {{ course.result_set.latest.date|naturaltime }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No course data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Feed -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+    {% for activity in activities %}
+    <a href="#" class="list-group-item list-group-item-action">
+        <div class="d-flex align-items-center">
+            <span class="activity-badge bg-{{ activity.activity_type }}
+ rounded-circle mr-3"></span>
+
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between">
+{{ activity.activity_type }}
+
+                    <small class="text-muted">
+                        {% if activity.created_at %}
+                            {{ activity.created_at|naturaltime }}
+                        {% else %}
+                            {{ activity.date|naturaltime }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<br><br><br>
-{% endblock content %}
+<!-- Chart.js -->
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script>
+    // Performance Chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ course_data.labels|safe }},
+            datasets: [{
+                label: 'Average Score',
+                data: {{ course_data.scores }},
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Pass Rate (%)',
+                data: {{ course_data.pass_rates }},
+                borderColor: '#1cc88a',
+                backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(1) + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
