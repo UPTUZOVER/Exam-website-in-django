@@ -189,26 +189,32 @@ def admin_view_student_view(request):
     return render(request,'exam/admin_view_student.html',{'students':students})
 
 
-
 @login_required(login_url='adminlogin')
-def update_student_view(request,pk):
-    student=SMODEL.Student.objects.get(id=pk)
-    user=SMODEL.User.objects.get(id=student.user_id)
-    userForm=SFORM.StudentUserForm(instance=user)
-    studentForm=SFORM.StudentForm(request.FILES,instance=student)
-    mydict={'userForm':userForm,'studentForm':studentForm}
-    if request.method=='POST':
-        userForm=SFORM.StudentUserForm(request.POST,instance=user)
-        studentForm=SFORM.StudentForm(request.POST,request.FILES,instance=student)
+def update_student_view(request, pk):
+    student = SMODEL.Student.objects.get(id=pk)
+    user = User.objects.get(id=student.user_id)
+    userForm = SFORM.StudentUserForm(instance=user)
+    studentForm = SFORM.StudentForm(instance=student)
+
+    if request.method == 'POST':
+        userForm = SFORM.StudentUserForm(request.POST, instance=user)
+        studentForm = SFORM.StudentForm(request.POST, request.FILES, instance=student)
         if userForm.is_valid() and studentForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
+            # Save user without committing to handle password
+            user = userForm.save(commit=False)
+            password = userForm.cleaned_data.get('password')
+            if password:
+                user.set_password(password)
             user.save()
+            # Save student
             studentForm.save()
             return redirect('admin-view-student')
-    return render(request,'exam/update_student.html',context=mydict)
 
-
+    mydict = {
+        'userForm': userForm,
+        'studentForm': studentForm,
+    }
+    return render(request, 'exam/update_student.html', context=mydict)
 
 @login_required(login_url='adminlogin')
 def delete_student_view(request,pk):
