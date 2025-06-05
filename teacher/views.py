@@ -81,6 +81,10 @@ from django.db.models.expressions import ExpressionWrapper
 
 def is_teacher(user):
     return user.groups.filter(name='TEACHER').exists()
+
+
+
+
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
 def teacher_dashboard_view(request):
