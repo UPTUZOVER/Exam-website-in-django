@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
@@ -99,26 +99,45 @@ def start_exam_view(request,pk):
     response.set_cookie('course_id',course.id)
     return response
 
+
+
+
+
 @login_required(login_url='studentlogin')
 @user_passes_test(is_student)
 def calculate_marks_view(request):
+    if request.method != 'POST':
+        return redirect('student_exam')
+
     course_id = request.COOKIES.get('course_id')
     if not course_id:
         return redirect('student_exam')
 
-    course = QMODEL.Course.objects.get(id=course_id)
+    course = get_object_or_404(QMODEL.Course, id=course_id)
     questions = QMODEL.Question.objects.filter(course=course)
     total_marks = 0
 
+    # POST da jo'natilgan javoblarni tekshirish
     for idx, question in enumerate(questions, start=1):
-        selected_answer = request.COOKIES.get(str(idx))
+        selected_answer = request.POST.get(f'question_{idx}')
         if selected_answer == question.answer:
-            total_marks += question.marks
+            total_marks += question.marks or 0
 
-    student = Student.objects.get(user=request.user)
+    student = get_object_or_404(Student, user=request.user)
+
+    # Result yaratish
     QMODEL.Result.objects.create(student=student, exam=course, marks=total_marks)
 
-    return redirect('view-result')
+    # Cookie ni o'chirish (majburiy emas, lekin yaxshi amaliyot)
+    response = redirect('view-result')
+    response.delete_cookie('course_id')
+    return response
+
+
+
+
+
+
 
 @login_required(login_url='studentlogin')
 @user_passes_test(is_student)

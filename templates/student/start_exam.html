@@ -6,7 +6,6 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <style>
-        /* Yangi qo'shilgan code container stillari */
         .question-card {
             background: #1e1e1e;
             border-radius: 8px;
@@ -19,20 +18,17 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
 
-        /* Sintaksis ranglari */
         .keyword { color: #569cd6; }
         .func { color: #dcdcaa; }
         .str { color: #ce9178; }
         .decorator { color: #9cdcfe; }
 
-        /* Asosiy konteyner */
         .exam-container {
             background: #f8f9fa;
             padding: 30px;
             border-radius: 15px;
         }
 
-        /* Variantlar uchun yangi stil */
         .option-item {
             background: #2d2d2d;
             color: #d4d4d4;
@@ -41,6 +37,7 @@
             margin: 10px 0;
             border-radius: 8px;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .option-item:hover {
@@ -53,11 +50,9 @@
             border-color: #569cd6;
         }
 
-        /* Raqam va ballar */
         .question-number { color: #569cd6; }
-        .marks-badge { background: #28a745; }
+        .marks-badge { background: #28a745; padding: 5px 10px; border-radius: 5px; }
 
-        /* Tugma stillari */
         .submit-btn {
             background: #007bff;
             padding: 15px 40px;
@@ -69,8 +64,8 @@
 
 <div class="container exam-container my-5">
     <div class="text-center mb-5">
-        <h1 class="display-4 mb-3" style="color: #2c3e50;">{{course.course_name}} Exam</h1>
-        <p class="lead text-muted">Total Questions: {{questions|length}}</p>
+        <h1 class="display-4 mb-3" style="color: #2c3e50;">{{ course.course_name }} Exam</h1>
+        <p class="lead text-muted">Total Questions: {{ questions|length }}</p>
     </div>
 
     <form autocomplete="off" onsubmit="return saveAns()" action="/student/calculate-marks" method="POST">
@@ -80,17 +75,16 @@
         <div class="question-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="question-number">Question {{ forloop.counter }}</div>
-                <div class="marks-badge text-white">{{q.marks}} Marks</div>
+                <div class="marks-badge text-white">{{ q.marks }} Marks</div>
             </div>
 
-            <pre class="mb-4">{{q.question}}</pre>
+            <pre class="mb-4">{{ q.question }}</pre>
 
             <div class="options-container">
                 {% for opt in q.options %}
                 <div class="option-item" onclick="selectOption(this)">
-                    <input type="radio" name="{{ forloop.parentloop.counter }}"
-                           value="{{opt}}" hidden>
-                    <label class="mb-0">{{opt}}</label>
+                    <input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ opt.value }}" hidden>
+                    <label class="mb-0">{{ opt.text }}</label>
                 </div>
                 {% endfor %}
             </div>
@@ -107,7 +101,6 @@
 </div>
 
 <script>
-    // Avvalgi JavaScript kodlari o'zgarishsiz qoldi
     function selectOption(element) {
         element.parentElement.querySelectorAll('.option-item').forEach(opt => {
             opt.classList.remove('selected');
@@ -116,9 +109,9 @@
         element.querySelector('input').checked = true;
     }
 
-    // Cookie saqlash funksiyalari
     function saveAns() {
-        /* ... */
+        // Cookie yoki boshqa logikani shu yerda yozishingiz mumkin
+        return true; // Forma yuborilishiga ruxsat berish uchun
     }
 </script>
 

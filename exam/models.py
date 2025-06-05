@@ -31,6 +31,7 @@ class Question(models.Model):
     )
     answer = models.CharField(max_length=200, choices=cat)
 
+    @property
     def options(self):
         return [
             {'value': 'Option1', 'text': self.option1},
@@ -50,6 +51,8 @@ class Question(models.Model):
             self.marks = 0
 
         super().save(*args, **kwargs)
+
+
 
 
 
