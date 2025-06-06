@@ -63,3 +63,6 @@ class Result(models.Model):
     exam = models.ForeignKey(Course, on_delete=models.CASCADE)  # exam yoki course bitta bo‘lsin
     marks = models.PositiveIntegerField()
     date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        get_latest_by = 'date'

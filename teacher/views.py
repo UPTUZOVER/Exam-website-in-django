@@ -83,74 +83,122 @@ def is_teacher(user):
     return user.groups.filter(name='TEACHER').exists()
 
 
+# teacher/views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from teacher.decorators import teacher_required
+from exam import models as QMODEL
+from student import models as SMODEL
+from django.db.models import Count, Avg, Max, Min, F, Q
+import datetime
+from django.db.models.functions import TruncMonth
 
 
 @login_required(login_url='teacherlogin')
-@user_passes_test(is_teacher)
+@teacher_required
 def teacher_dashboard_view(request):
+    # 1. Main statistics
     total_course = QMODEL.Course.objects.count()
     total_question = QMODEL.Question.objects.count()
     total_student = SMODEL.Student.objects.count()
 
-    # Get courses with statistics
+    # Calculate overall average score
+    overall_avg = QMODEL.Result.objects.aggregate(avg_score=Avg('marks'))['avg_score'] or 0
+
+    # 2. Course statistics
     courses = QMODEL.Course.objects.annotate(
-        total_attempts=Count('result'),
+        student_count=Count('result__student', distinct=True),
+        exam_count=Count('result', distinct=True),
         avg_score=Avg('result__marks'),
-        pass_rate=ExpressionWrapper(
-            Sum(
-                Case(
-                    When(result__marks__gte=40, then=1),
-                    default=0,
-                    output_field=IntegerField()
-                )
-            ) * 100.0 / Count('result'),
-            output_field=FloatField()
-        )
-    ).prefetch_related(
-        Prefetch(
-            'result_set',
-            queryset=Result.objects.select_related('student').order_by('-marks'),
-            to_attr='ordered_results'
-        )
-    )
+        max_score=Max('result__marks'),
+        min_score=Min('result__marks')
+    ).order_by('-created_at')[:10]
 
-    # Prepare course data with top students
-    for course in courses:
-        if hasattr(course, 'ordered_results') and course.ordered_results:
-            course.top_student = course.ordered_results[0].student
-        else:
-            course.top_student = None
+    # 3. Top results
+    top_results = QMODEL.Result.objects.select_related('student', 'exam').order_by('-marks')[:10]
 
-    recent_exams = QMODEL.Course.objects.order_by('-id')[:5]
-    recent_attempts = Result.objects.select_related('student', 'exam').order_by('-date')[:10]
+    # 4. Recent results
+    recent_results = QMODEL.Result.objects.select_related('student', 'exam').order_by('-date')[:10]
 
-    # Activity log
-    activities = list(chain(
-        QMODEL.Course.objects.filter(created_at__isnull=False).order_by('-created_at')[:10],
-        Result.objects.select_related('student').order_by('-date')[:10]
-    ))
-    activities.sort(key=lambda x: getattr(x, 'created_at', getattr(x, 'date', None)), reverse=True)
-    avg_pass_rate = 0
-    if courses:
-        avg_pass_rate = sum(course.pass_rate or 0 for course in courses) / len(courses)
+    # 5. Active students
+    active_students = SMODEL.Student.objects.annotate(
+        exam_count=Count('result__exam', distinct=True),
+        last_exam_date=Max('result__date')
+    ).filter(exam_count__gt=0).order_by('-exam_count')[:10]
+
+    # 6. Data for charts
+    course_names = [course.course_name for course in courses]
+    course_student_counts = [course.student_count or 0 for course in courses]
+
+    # 7. Score distribution (fixed keys)
+    score_distribution = {
+        "score_90_100": QMODEL.Result.objects.filter(marks__gte=90).count(),
+        "score_80_89": QMODEL.Result.objects.filter(marks__gte=80, marks__lt=90).count(),
+        "score_70_79": QMODEL.Result.objects.filter(marks__gte=70, marks__lt=80).count(),
+        "score_60_69": QMODEL.Result.objects.filter(marks__gte=60, marks__lt=70).count(),
+        "score_50_59": QMODEL.Result.objects.filter(marks__gte=50, marks__lt=60).count(),
+        "score_lt_50": QMODEL.Result.objects.filter(marks__lt=50).count(),
+    }
+
+    # 8. Monthly exam activity (fixed to handle year changes)
+    today = datetime.date.today()
+    six_months_ago = today - datetime.timedelta(days=180)
+
+    # Get exam counts per month
+    monthly_activity = QMODEL.Result.objects.filter(
+        date__gte=six_months_ago
+    ).annotate(
+        month=TruncMonth('date')
+    ).values('month').annotate(
+        exam_count=Count('id')
+    ).order_by('month')
+
+    # Create a dictionary of month: count
+    activity_data = {entry['month']: entry['exam_count'] for entry in monthly_activity}
+
+    # Generate data for last 6 months
+    activity_months = []
+    activity_counts = []
+
+    for i in range(6):
+        month_date = today - datetime.timedelta(days=30 * i)
+        month_key = month_date.replace(day=1)
+        count = activity_data.get(month_key, 0)
+        activity_months.append(month_key.strftime("%b %Y"))
+        activity_counts.append(count)
+
+    activity_months.reverse()
+    activity_counts.reverse()
+
+    # 9. Top courses by average score
+    top_courses = QMODEL.Course.objects.annotate(
+        avg_score=Avg('result__marks')
+    ).exclude(avg_score=None).order_by('-avg_score')[:5]
 
     context = {
-        'avg_pass_rate': avg_pass_rate,
         'total_course': total_course,
         'total_question': total_question,
         'total_student': total_student,
+        'overall_avg_score': overall_avg,
+
         'courses': courses,
-        'recent_exams': recent_exams,
-        'recent_attempts': recent_attempts,
-        'activities': activities[:10],
-        'course_data': {
-            'labels': [course.course_name for course in courses],
-            'attempts': [course.total_attempts for course in courses],
-            'scores': [course.avg_score or 0 for course in courses],
-            'pass_rates': [course.pass_rate or 0 for course in courses]
-        }
+        'top_results': top_results,
+        'recent_results': recent_results,
+        'active_students': active_students,
+
+        'course_names': course_names,
+        'course_student_counts': course_student_counts,
+        'score_distribution': score_distribution,
+        'activity_months': activity_months,
+        'activity_counts': activity_counts,
+
+        'top_courses': top_courses,
+        'current_month': today.strftime("%B %Y"),
     }
+
     return render(request, 'teacher/teacher_dashboard.html', context)
+
+
 
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)

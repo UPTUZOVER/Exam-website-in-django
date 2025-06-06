@@ -1,216 +1,206 @@
-{% extends 'teacher/teacherbase.html' %}
-{% load static humanize %}
+]{% extends 'teacher/teacherbase.html' %}
+{% load static %}
 {% block content %}
-{% load static humanize custom_filters %}
-{% load custom_filters %}
 
 <head>
-    <link href="{% static 'css/chart.min.css' %}" rel="stylesheet">
-    <style>
-        .progress-lg { height: 25px; }
-        .chart-container { background: white; border-radius: 15px; padding: 20px; }
-        .activity-badge { width: 8px; height: 8px; }
-        .table-hover tbody tr:hover { background-color: rgba(0,0,0,0.03); }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Teacher Dashboard</title>
+
+    <!-- CSS Libraries -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css">
+
+    <style type="text/css">
+        a:link { text-decoration: none; }
+
+        .order-card {
+            color: #fff;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: none;
+        }
+
+        .bg-c-blue { background: linear-gradient(45deg, #104f66, #2a95bf); }
+        .bg-c-green { background: linear-gradient(45deg, #4C51BF, #667eea); }
+        .bg-c-yellow { background: linear-gradient(45deg, #53616e, #7d8b9a); }
+        .bg-c-gtx { background: linear-gradient(45deg, #303a3c, #4a5a5d); }
+        .bg-c-orange { background: linear-gradient(45deg, #f39c12, #f1c40f); }
+        .bg-c-pink { background: linear-gradient(45deg, #e74c3c, #e67e22); }
+
+        .card .card-block { padding: 25px; }
+        .order-card i { font-size: 26px; }
+        .f-left { float: left; }
+        .f-right { float: right; }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            width: 100%;
+        }
+
+        .dashboard-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .badge-score { font-size: 0.9em; padding: 5px 10px; }
+
+        .progress-thin { height: 8px; }
+
+        .recent-activity-item {
+            border-left: 3px solid #4C51BF;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
     </style>
 </head>
 
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-0">Teaching Analytics Dashboard</h2>
-            <p class="text-muted">Last updated: {% now "DATETIME_FORMAT" %}</p>
-        </div>
-    </div>
-
-    <!-- Summary Cards -->
+<div class="container-fluid">
+    <!-- Stats Cards Row -->
     <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary mb-1">
-                                Total Courses</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ total_course }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-book fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3 col-xl-3">
+            <div class="card bg-c-gtx order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Registered Students</h6>
+                    <h2 class="text-right"><i class="fa fa-users f-left"></i><span>{{total_student}}</span></h2>
+                    <p class="m-b-0">Active: {{ active_students|length }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success mb-1">
-                                Total Questions</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ total_question }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-question-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3 col-xl-3">
+            <div class="card bg-c-yellow order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Total Courses</h6>
+                    <h2 class="text-right"><i class="fa fa-book f-left"></i><span>{{total_course}}</span></h2>
+                    <p class="m-b-0">Active: {{ courses|length }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info mb-1">
-                                Total Students</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ total_student }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3 col-xl-3">
+            <div class="card bg-c-blue order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Total Questions</h6>
+                    <h2 class="text-right"><i class="fa fa-question-circle f-left"></i><span>{{total_question}}</span></h2>
+                    <p class="m-b-0">Avg per course: {{ total_question|floatformat:0 }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning mb-1">
-                                Avg Pass Rate</div>
-                        <div class="h5 mb-0 font-weight-bold">
-                            {% if courses %}
-                                {% with total=0 count=0 %}
-                                    {% for course in courses %}
-                                        {% if course.pass_rate %}
-                                            {% with total=total|add:course.pass_rate count=count|add:1 %}
-                                            {% endwith %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% if count > 0 %}
-                                        {{ total|div:count|floatformat:1 }}%
-                                    {% else %}
-                                        0%
-                                    {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                0%
-                            {% endif %}
-                        </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3 col-xl-3">
+            <div class="card bg-c-green order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Avg Score</h6>
+                    <h2 class="text-right"><i class="fa fa-chart-line f-left"></i><span>{{overall_avg_score|floatformat:1}}%</span></h2>
+                    <p class="m-b-0">All courses</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Charts Row -->
     <div class="row">
-        <!-- Performance Chart -->
-        <div class="col-xl-8 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Course Performance Overview</h6>
+        <!-- Course Participation Chart -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Course Participation</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
+                        <canvas id="courseChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Exams -->
-        <div class="col-xl-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Exams</h6>
+        <!-- Score Distribution Chart -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-info text-white">
+                    <h5>Score Distribution</h5>
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
-                        {% for course in recent_exams %}
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex justify-content-between">
-                                <span>{{ course.course_name }}</span>
-                                <small class="text-muted">{{ course.created_at|naturaltime }}</small>
-                            </div>
-                            <div class="progress progress-lg mt-2">
-                                <div class="progress-bar bg-success"
-                                     style="width: {{ course.pass_rate|default:0 }}%">
-                                    {{ course.pass_rate|default:0|floatformat:1 }}%
-                                </div>
-                            </div>
-                        </a>
-                        {% empty %}
-                        <div class="list-group-item">
-                            <p class="text-muted mb-0">No recent exams found</p>
-                        </div>
-                        {% endfor %}
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Detailed Statistics -->
+    <!-- Activity and Top Courses Row -->
     <div class="row">
-        <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Detailed Course Statistics</h6>
+        <!-- Exam Activity Chart -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-warning text-white">
+                    <h5>Exam Activity (Last 6 Months)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Courses by Score -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-success text-white">
+                    <h5>Top Courses by Average Score</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-hover">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Course</th>
-                                    <th>Attempts</th>
                                     <th>Avg Score</th>
-                                    <th>Pass Rate</th>
-                                    <th>Top Student</th>
-                                    <th>Last Attempt</th>
+                                    <th>Progress</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for course in courses %}
+                                {% for course in top_courses %}
                                 <tr>
                                     <td>{{ course.course_name }}</td>
-                                    <td>{{ course.total_attempts }}</td>
-                                    <td>{{ course.avg_score|default:0|floatformat:1 }}</td>
+                                    <td>{{ course.avg_score|floatformat:1 }}%</td>
                                     <td>
-                                        <div class="progress">
+                                        <div class="progress progress-thin">
                                             <div class="progress-bar bg-success"
-                                                 style="width: {{ course.pass_rate|default:0 }}%">
-                                                {{ course.pass_rate|default:0|floatformat:1 }}%
-                                            </div>
+                                                 role="progressbar"
+                                                 style="width: {{ course.avg_score }}%"
+                                                 aria-valuenow="{{ course.avg_score }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100"></div>
                                         </div>
                                     </td>
-                                    <td>
-                                        {% if course.ordered_results and course.ordered_results.0 %}
-                                            {{ course.ordered_results.0.student.get_name }} ({{ course.ordered_results.0.marks }}%)
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if course.result_set.all %}
-                                            {{ course.result_set.latest.date|naturaltime }}
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6" class="text-center">No course data available</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -221,94 +211,301 @@
         </div>
     </div>
 
-    <!-- Activity Feed -->
+    <!-- Recent Results and Active Students Row -->
     <div class="row">
-        <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+        <!-- Recent Results -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-danger text-white">
+                    <h5>Recent Exam Results</h5>
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
-    {% for activity in activities %}
-    <a href="#" class="list-group-item list-group-item-action">
-        <div class="d-flex align-items-center">
-            <span class="activity-badge bg-{{ activity.activity_type }}
- rounded-circle mr-3"></span>
-
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between">
-{{ activity.activity_type }}
-
-                    <small class="text-muted">
-                        {% if activity.created_at %}
-                            {{ activity.created_at|naturaltime }}
-                        {% else %}
-                            {{ activity.date|naturaltime }}
-                        {% endif %}
-                    </small>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Score</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in recent_results %}
+                                <tr>
+                                    <td>{{ result.student.get_name }}</td>
+                                    <td>{{ result.exam.course_name }}</td>
+                                    <td>
+                                        <span class="badge
+                                            {% if result.marks >= 80 %}badge-success
+                                            {% elif result.marks >= 60 %}badge-primary
+                                            {% elif result.marks >= 40 %}badge-warning
+                                            {% else %}badge-danger
+                                            {% endif %}">
+                                            {{ result.marks }}%
+                                        </span>
+                                    </td>
+                                    <td>{{ result.date|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </a>
-    {% endfor %}
-</div>
+
+        <!-- Active Students -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Most Active Students</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Exams Taken</th>
+                                    <th>Last Activity</th>
+                                    <th>Avg Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in active_students %}
+                                <tr>
+                                    <td>{{ student.get_name }}</td>
+                                    <td>{{ student.exam_count }}</td>
+                                    <td>{{ student.last_exam_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% widthratio student.avg_score 1 100 as avg_score %}
+                                        <span class="badge
+                                            {% if avg_score >= 80 %}badge-success
+                                            {% elif avg_score >= 60 %}badge-primary
+                                            {% elif avg_score >= 40 %}badge-warning
+                                            {% else %}badge-danger
+                                            {% endif %}">
+                                            {{ avg_score }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Results and Course Stats Row -->
+    <div class="row">
+        <!-- Top Results -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-info text-white">
+                    <h5>Top Exam Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in top_results %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ result.student.get_name }}</td>
+                                    <td>{{ result.exam.course_name }}</td>
+                                    <td>
+                                        <span class="badge
+                                            {% if result.marks >= 90 %}badge-success
+                                            {% elif result.marks >= 70 %}badge-primary
+                                            {% elif result.marks >= 50 %}badge-warning
+                                            {% else %}badge-danger
+                                            {% endif %}">
+                                            {{ result.marks }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Statistics -->
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Course Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Students</th>
+                                    <th>Avg Score</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.course_name }}</td>
+                                    <td>{{ course.student_count }}</td>
+                                    <td>{{ course.avg_score|floatformat:1 }}%</td>
+                                    <td>
+                                        <div class="progress progress-thin">
+                                            <div class="progress-bar
+                                                {% if course.avg_score >= 80 %}bg-success
+                                                {% elif course.avg_score >= 60 %}bg-primary
+                                                {% elif course.avg_score >= 40 %}bg-warning
+                                                {% else %}bg-danger
+                                                {% endif %}"
+                                                role="progressbar"
+                                                style="width: {{ course.avg_score }}%"
+                                                aria-valuenow="{{ course.avg_score }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Chart.js -->
-<script src="{% static 'js/chart.min.js' %}"></script>
+<!-- JavaScript Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
 <script>
-    // Performance Chart
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-    const performanceChart = new Chart(ctx, {
-        type: 'line',
+    // Course Participation Chart
+    var courseCtx = document.getElementById('courseChart').getContext('2d');
+    var courseChart = new Chart(courseCtx, {
+        type: 'bar',
         data: {
-            labels: {{ course_data.labels|safe }},
+            labels: {{ course_names|safe }},
             datasets: [{
-                label: 'Average Score',
-                data: {{ course_data.scores }},
-                borderColor: '#4e73df',
-                backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                fill: true,
-                tension: 0.4
-            }, {
-                label: 'Pass Rate (%)',
-                data: {{ course_data.pass_rates }},
-                borderColor: '#1cc88a',
-                backgroundColor: 'rgba(28, 200, 138, 0.05)',
-                fill: true,
-                tension: 0.4
+                label: 'Number of Students',
+                data: {{ course_student_counts }},
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
+                yAxes: [{
                     ticks: {
-                        callback: function(value) {
-                            return value + '%';
-                        }
+                        beginAtZero: true
                     }
-                }
+                }]
             },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + context.raw.toFixed(1) + '%';
-                        }
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    // Score Distribution Chart
+    var scoreCtx = document.getElementById('scoreChart').getContext('2d');
+    var scoreChart = new Chart(scoreCtx, {
+        type: 'pie',
+        data: {
+            labels: ['90-100%', '80-89%', '70-79%', '60-69%', '50-59%', 'Below 50%'],
+            datasets: [{
+                data: [
+                    {{ score_distribution.score_90_100 }},
+                    {{ score_distribution.score_80_89 }},
+                    {{ score_distribution.score_70_79 }},
+                    {{ score_distribution.score_60_69 }},
+                    {{ score_distribution.score_50_59 }},
+                    {{ score_distribution.score_lt_50 }}
+                ],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.7)',
+                    'rgba(0, 123, 255, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(253, 126, 20, 0.7)',
+                    'rgba(220, 53, 69, 0.7)',
+                    'rgba(108, 117, 125, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(0, 123, 255, 1)',
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(253, 126, 20, 1)',
+                    'rgba(220, 53, 69, 1)',
+                    'rgba(108, 117, 125, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                position: 'right'
+            }
+        }
+    });
+
+    // Exam Activity Chart
+    var activityCtx = document.getElementById('activityChart').getContext('2d');
+    var activityChart = new Chart(activityCtx, {
+        type: 'line',
+        data: {
+            labels: {{ activity_months|safe }},
+            datasets: [{
+                label: 'Exams Taken',
+                data: {{ activity_counts }},
+                backgroundColor: 'rgba(23, 162, 184, 0.2)',
+                borderColor: 'rgba(23, 162, 184, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(23, 162, 184, 1)',
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
                     }
-                }
+                }]
+            },
+            legend: {
+                display: false
             }
         }
     });
 </script>
 
-{% endblock %}
+{% endblock content %}
