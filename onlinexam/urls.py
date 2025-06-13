@@ -6,6 +6,16 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 
+
+from django.urls import path
+from exam.serializers_views import (
+    CourseListCreateAPIView,
+    CourseRetrieveUpdateDestroyAPIView,
+    QuestionListCreateAPIView,
+    QuestionRetrieveUpdateDestroyAPIView
+)
+
+
 @never_cache  # Orqaga qaytishni bloklaydi
 def logout_view(request):
     logout(request)
@@ -17,6 +27,14 @@ def logout_view(request):
     return response
 
 urlpatterns = [
+
+    path('courses/', CourseListCreateAPIView.as_view(), name='course-list-create'),
+    path('courses/<int:pk>/', CourseRetrieveUpdateDestroyAPIView.as_view(), name='course-detail'),
+    path('questions/', QuestionListCreateAPIView.as_view(), name='question-list-create'),
+    path('questions/<int:pk>/', QuestionRetrieveUpdateDestroyAPIView.as_view(), name='question-detail'),
+
+
+
    
     path('admin/', admin.site.urls),
     path('teacher/',include('teacher.urls')),
@@ -60,6 +78,10 @@ urlpatterns = [
     path('admin-view-question', views.admin_view_question_view,name='admin-view-question'),
     path('view-question/<int:pk>', views.view_question_view,name='view-question'),
     path('delete-question/<int:pk>', views.delete_question_view,name='delete-question'),
+
+
+
+
 
 
 ]

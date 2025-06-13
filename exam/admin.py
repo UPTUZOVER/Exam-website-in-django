@@ -7,6 +7,10 @@ class QuestionInline(admin.TabularInline):
     fields = ['marks', 'question', 'option1', 'option2', 'option3', 'option4', 'answer']
     show_change_link = True
 
+# class Cource_Question_ImageInline(admin.TabularInline):
+#     model = Cource_Question_Image
+#     extra = 1
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['course_name', 'question_number', 'total_marks']

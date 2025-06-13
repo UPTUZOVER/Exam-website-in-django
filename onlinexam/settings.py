@@ -33,7 +33,9 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+PYTESSERACT_PATH = '/usr/bin/tesseract'  # Tizimdagi joylashuvi
+OPENAI_API_KEY = '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'
+TESSERACT_CMD = '/usr/bin/tesseract'
 INSTALLED_APPS = [
 
     "jazzmin",
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'exam',
     'markdown',
     'teacher',
